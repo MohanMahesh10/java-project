@@ -1,0 +1,51 @@
+# java-project
+import java.util.ArrayList;
+
+public class CarParking {
+    private ArrayList<String> parkingSpaces;
+    private int availableSpaces;
+
+    public CarParking(int capacity) {
+        this.parkingSpaces = new ArrayList<String>(capacity);
+        for (int i = 0; i < capacity; i++) {
+            parkingSpaces.add(null);
+        }
+        this.availableSpaces = capacity;
+    }
+
+    public synchronized boolean park(String car) {
+        if (availableSpaces > 0) {
+            int index = parkingSpaces.indexOf(null);
+            parkingSpaces.set(index, car);
+            availableSpaces--;
+            System.out.println(car + " parked at space " + index);
+            return true;
+        }
+        System.out.println("No available space to park " + car);
+        return false;
+    }
+
+    public synchronized boolean leave(String car) {
+        int index = parkingSpaces.indexOf(car);
+        if (index >= 0) {
+            parkingSpaces.set(index, null);
+            availableSpaces++;
+            System.out.println(car + " left the parking space " + index);
+            return true;
+        }
+        System.out.println(car + " is not in the parking");
+        return false;
+    }
+
+    public int getAvailableSpaces() {
+        return availableSpaces;
+    }
+
+    public static void main(String[] args) {
+        CarParking parking = new CarParking(5);
+        parking.park("Car A");
+        parking.park("Car B");
+        parking.leave("Car A");
+        parking.park("Car C");
+    }
+}
